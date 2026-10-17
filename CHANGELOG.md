@@ -7,19 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Tests — 2026-10-17
+### Added — 2026-10-17
 
-- contracts/vesting/src/lib.rs: `test_create_schedule_cliff_equals_duration` (#62).
-  Verifies the boundary case where `cliff_duration == total_duration` — the
-  entire vesting period is a cliff with no linear release phase. The
-  transition from 0 to `total_amount` happens in a single ledger step at
-  `start_time + total_duration`. Asserts `get_claimable() == 0` at
-  `start + 99`, `get_claimable() == 1_000` at `start + 100`, and that
-  `claim()` returns the full amount and transitions the schedule to
-  `Completed`. Also fixes the pre-existing duplicate
-  `test_create_schedule_minimum_amount` definition in the test module.
+- contracts/vesting/README.md: "Panic conditions" reference table (#91).
+  Documents every `panic_with_error!` call in the vesting contract source with
+  the function name, `VestingError` variant, numeric error code, and the
+  condition that triggers it. Covers `create_schedule`,
+  `batch_create_schedule`, `claim`, `revoke`, `transfer_beneficiary`,
+  `pause`/`unpause`/`transfer_admin`, and the read-only getters. Based
+  strictly on the source — no messages were invented. All 10 `VestingError`
+  variants (`AmountMustBePositive`, `DurationMustBePositive`,
+  `CliffExceedsDuration`, `StartPlusCliffOverflow`, `StartPlusDurationOverflow`,
+  `ScheduleNotFound`, `ScheduleNotActive`, `NothingToClaim`,
+  `ContractIsPaused`, `BatchEmpty`) are listed.
 
 ### Tests — 2026-10-16
+
+- contracts/vesting/src/lib.rs: `test_create_schedule_future_start_time` (#63).
+  Verifies that when `start_time` is set to a future ledger timestamp, nothing
+  is claimable before `start_time` and the correct linear amount is claimable
+  once the ledger advances past `start_time`. Asserts `get_claimable() == 0`
+  at `start_time - 1` and `get_claimable() == 500` (50% of 1 000) at
+  `start_time + 50` with `total_duration = 100`. Calls `claim()` and asserts
+  the beneficiary balance matches. Also fixes a pre-existing duplicate test
+  definition that prevented the vesting test suite from compiling.
 
 - contracts/vesting/src/lib.rs: two new tests for `get_claimable()` on
   terminal schedule statuses (#61).
