@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Tests — 2026-10-17
+
+- contracts/vesting/src/lib.rs: `test_create_schedule_cliff_equals_duration` (#62).
+  Verifies the boundary case where `cliff_duration == total_duration` — the
+  entire vesting period is a cliff with no linear release phase. The
+  transition from 0 to `total_amount` happens in a single ledger step at
+  `start_time + total_duration`. Asserts `get_claimable() == 0` at
+  `start + 99`, `get_claimable() == 1_000` at `start + 100`, and that
+  `claim()` returns the full amount and transitions the schedule to
+  `Completed`. Also fixes the pre-existing duplicate
+  `test_create_schedule_minimum_amount` definition in the test module.
+
 ### Tests — 2026-10-16
 
 - contracts/vesting/src/lib.rs: two new tests for `get_claimable()` on
