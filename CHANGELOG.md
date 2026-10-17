@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Tests — 2026-10-17
+
+- contracts/token/src/lib.rs: `test_transfer_to_self` (#66). Verifies that
+  transferring tokens from an address to itself leaves both the sender's
+  balance and `total_supply` completely unchanged. Mints 1 000 tokens to
+  admin, calls `transfer(&admin, &admin, &100)`, then asserts
+  `balance(&admin) == 1_000` and `total_supply() == 1_000`. Exercises the
+  sequential subtract-then-add path in `_transfer()` when `from == to`.
+
 ### Tests — 2026-10-16
 
 - contracts/vesting/src/lib.rs: two new tests for `get_claimable()` on
