@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Tests — 2026-10-16
 
+- contracts/vesting/src/lib.rs: `test_create_schedule_future_start_time` (#63).
+  Verifies that when `start_time` is set to a future ledger timestamp, nothing
+  is claimable before `start_time` and the correct linear amount is claimable
+  once the ledger advances past `start_time`. Asserts `get_claimable() == 0`
+  at `start_time - 1` and `get_claimable() == 500` (50% of 1 000) at
+  `start_time + 50` with `total_duration = 100`. Calls `claim()` and asserts
+  the beneficiary balance matches. Also fixes a pre-existing duplicate test
+  definition that prevented the vesting test suite from compiling.
+
 - contracts/vesting/src/lib.rs: two new tests for `get_claimable()` on
   terminal schedule statuses (#61).
   - `test_get_claimable_on_completed_schedule`: fully vests and claims a
