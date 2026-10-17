@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added — 2026-10-17
+
+- contracts/vesting/README.md: "Panic conditions" reference table (#91).
+  Documents every `panic_with_error!` call in the vesting contract source with
+  the function name, `VestingError` variant, numeric error code, and the
+  condition that triggers it. Covers `create_schedule`,
+  `batch_create_schedule`, `claim`, `revoke`, `transfer_beneficiary`,
+  `pause`/`unpause`/`transfer_admin`, and the read-only getters. Based
+  strictly on the source — no messages were invented. All 10 `VestingError`
+  variants (`AmountMustBePositive`, `DurationMustBePositive`,
+  `CliffExceedsDuration`, `StartPlusCliffOverflow`, `StartPlusDurationOverflow`,
+  `ScheduleNotFound`, `ScheduleNotActive`, `NothingToClaim`,
+  `ContractIsPaused`, `BatchEmpty`) are listed.
+
 ### Tests — 2026-10-16
 
 - contracts/vesting/src/lib.rs: two new tests for `get_claimable()` on
